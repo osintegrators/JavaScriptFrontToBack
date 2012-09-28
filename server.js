@@ -1,13 +1,19 @@
 // set up http server
+// @jfreeman
+
 var http = require('http');
 var url = require('url');
+var router = require('./router.js');
 
-exports.init = function(){
+exports.init = function(mapping){
     var onRequest = function(request, response) {
-        console.log('>> request recieved');
-        response.writeHead(200, {"Content-Type":"application/json"});
-        response.write('{"string":"json-test"}');
-        response.end();
+        var path = url.parse(request.url).pathname;
+        var content;
+        if( path !== "/favicon.ico"){
+            console.log('>> request for '+path+' recieved');
+        }
+
+        content = router.route(mapping, path, response);       
     }
 
 
