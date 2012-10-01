@@ -1,13 +1,17 @@
 // Deal with different URL's being hit
 // @jfreeman
 
-
-exports.route = function(mapping, path, response){
+var index = require('./index.js');
+exports.route = function(mapping, path, response, postData){
     console.log('routing to: '+path);
-    if (typeof mapping[path] === 'function') {
-        response.writeHead(200, {"Content-Type":"application/json"});
-        response.write("data: "+mapping[path]());
+    if( path === '/') {
+        response.writeHead(404, {"Content-Type":"text/html"});
+        response.write(index.HTML);
         response.end();
+    }
+    else if (typeof mapping[path] === 'function') {
+        console.log('in router');
+        mapping[path](response, postData);
     }
     else {
         //error out

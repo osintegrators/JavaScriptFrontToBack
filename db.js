@@ -2,13 +2,12 @@
     @jfreeman
  */
 
-    var mongo = require('mongodb'),
-        Server = mongo.Server,
-        Db = mongo.Db;
+var mongo = require('mongodb'),
+    Server = mongo.Server,
+    Db = mongo.Db;
 
-    var server = new Server('localhost', 27017, {auto_reconnect: true});
-    var db = new Db('GrannyDB',server);
-var addressesColl;
+var server = new Server('localhost', 27017, {auto_reconnect: true});
+var db = new Db('GrannyDB',server);
 
 exports.init = function() {
 
@@ -28,13 +27,21 @@ exports.init = function() {
                 if(!err) {
                 //do something
                 console.log('>> Collection Created, DB ready for use');
-                addresseColl = collection;
+                collection.insert({name:'Jonathan', phone:'703-505-5246', address:'123 main st', email:'me@me.com'}, {safe:true}, function( err, result) {
+                if(err) {
+                    console.log(err);
                 }
-
+                else {
+                    console.log('fake doc added');
+                }
+                });
+                }
+                else {
+                    console.log('error');
+                    console.log(err);
+                }
                 });
             }
         db.close();
     });
 };
-exports.getDb = db;
-exports.addresses = addressesColl;

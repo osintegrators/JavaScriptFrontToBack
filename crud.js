@@ -1,42 +1,134 @@
 // handle specific ajax requests here
 // @jfreeman
 
+var mongo = require('mongodb'),
+    Server = mongo.Server,
+    ObjectID = mongo.ObjectID,
+    Db = mongo.Db;
 
-exports.getAddressList = function(){
+var server = new Server('localhost', 27017, {auto_reconnect: true});
+var db = new Db('GrannyDB',server);
+
+var respond = function(response, data, err) {
+    var responseObj = {data: data, error: err};
+    response.writeHead(200, {"Content-Type":"application/json"});
+    response.write(JSON.stringify(responseObj));
+    response.end();
+};
+
+exports.getAddressList = function(response){
     // TODO query the collection and return the list of addresses
     // Since we're dealing with a relatively small amount of data,
     // use toArray().  If more data is involved, stream it!
-//            collection.find().toArray(function(err, items){
-//                // handle the array of addresses
-//                console.log(items);
-//                });
-    return '{ "name":"Jonthan", "email":"jfreeman@osintegrators"}';
-};
-
-exports.getAddress = function(id){
-    // TODO query the collection with an ID and return a single address entry
-    collection.findOne({id:id}, function(err, item){
-            //handles after the query for one
+    db.open( function(err, db) {
+        if(!err) {
+            db.collection('addresses', function(err, coll) {
+                if(!err) {
+                    console.log('collection addresses opened');
+                    var cursor = coll.find();
+                    
+                    cursor.toArray(function(err, items) {
+                        console.log(JSON.stringify(items));
+                        respond(response, items);
+                    });
+                }
+                else {
+                    console.log('error opening the collection in crud.js');
+                }
             });
+
+        }
+        else {
+            console.log('error opening the db in crud.js');
+        }
+        db.close();
+    });
 };
 
-exports.updateAddress = function(id, obj){
-    // TODO send new address info to the collection
+exports.getAddress = function(response, data){
+    // TODO query the collection with an ID and return a single address entry
+    console.log('in get address');
+    console.log(data.data);
+    db.open( function(err, db) {
+        if(!err) {
+            db.collection('addresses', function(err, coll) {
+                if(!err) {
+                    console.log('collection addresses opened');
+                    coll.findOne({_id: ObjectID(data.data)}, function(err, item){
+                        //handles after the query for one
+                        console.log('found item');
+                        console.log(JSON.stringify(item));
+                        respond(response, item);
+                    });
+                }
+                else {
+                    console.log('error opening the collection in crud.js');
+                }
+            });
+
+        }
+        else {
+            console.log('error opening the db in crud.js');
+        }
+        db.close();
+    });
+};
+
+exports.updateAddress = function(response, obj){
+    var id = ObjectID(obj.data._id);
+    db.open( function(err, db) {
+        if(!err) {
+            db.collection('addresses', function(err, coll) {
+                if(!err) {
+                    console.log('collection addresses opened');
+                    coll.update({_id: ObjectID(data.data)}, function(err, item){
+                        //handles after the query for one
+                        console.log('found item');
+                        console.log(JSON.stringify(item));
+                        respond(response, item);
+                    });
+                }
+                else {
+                    console.log('error opening the collection in crud.js');
+                }
+            });
+
+        }
+        else {
+            console.log('error opening the db in crud.js');
+        }
+        db.close();
+    });
     collection.update({uniqueId:id}, {$set: obj}, {safe:true}, function(err, result){
             // handles after the update
             });
 };
 
-exports.createAddress = function(newEntry){
+exports.createAddress = function(response, newEntry){
     // TODO insert a new address into the collection
-    collection.insert(newEntry, {safe:true}, function(err, result){
-            // handles after the insert
-            if(!err)
-            console.log('address added!');
+    db.open( function(err, db) {
+        if(!err) {
+            db.collection('addresses', function(err, coll) {
+                if(!err) {
+                    console.log('collection addresses opened');
+                    coll.insert(newEntry, {safe:true}, function(err, result){
+                    });
+                    respond(response, {}, {});
+                }
+                else {
+                    console.log('error opening the collection in crud.js');
+                }
             });
+
+        }
+        else {
+            console.log('error opening the db in crud.js');
+        }
+        db.close();
+    });
 };
 
-exports.deleteAddress = function(idToDelete){
+exports.deleteAddress = function(response, idToDelete){
     //TODO delete a specified address from the collection
     collection.remove({uniqueId:idToDelete}, {safe:true}, function(err, result){
             // handles after the remove
