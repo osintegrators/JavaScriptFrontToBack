@@ -12,9 +12,6 @@ exports.init = function(mapping){
         var content;
         var postData = '';
 
-        if( path !== "/favicon.ico"){
-            console.log('>> request for '+path+' recieved');
-        }
         // get post data
         request.setEncoding("utf8");
         request.addListener("data", function(chunk) {
@@ -25,7 +22,6 @@ exports.init = function(mapping){
                 postData = JSON.parse(postData);
             } else if (request.method == 'GET' && urlobj.query && urlobj.query.length > 1) {
                 postData = JSON.parse(decodeURIComponent(urlobj.query)); 
-                console.log('postData after parse qs :'+postData);
             }
             content = router.route(mapping, path, response, postData, request.method);
         });

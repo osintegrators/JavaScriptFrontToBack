@@ -24,7 +24,6 @@ exports.getAddresses = function(response){
         if(!err) {
             db.collection('addresses', function(err, coll) {
                 if(!err) {
-                    console.log('collection addresses opened');
                     var cursor = coll.find();
                     
                     cursor.toArray(function(err, items) {
@@ -46,15 +45,12 @@ exports.getAddresses = function(response){
 
 exports.getAddress = function(response, data){
     // TODO query the collection with an ID and return a single address entry
-    console.log('in get address');
     db.open( function(err, db) {
         if(!err) {
             db.collection('addresses', function(err, coll) {
                 if(!err) {
-                    console.log('collection addresses opened');
                     coll.findOne({_id: ObjectID(data.data)}, function(err, item){
                         //handles after the query for one
-                        console.log('found item');
                         respond(response, item);
                     });
                 }
@@ -76,12 +72,9 @@ exports.updateAddress = function(response, data){
         if(!err) {
             db.collection('addresses', function(err, coll) {
                 if(!err) {
-                    console.log('collection addresses opened');
                   //  coll.update({_id: ObjectID(data._id)}, function(err, item){
                     coll.update({_id: ObjectID(data._id)}, {$set: recreateAddressWithoutId(data)}, {safe:true}, function(err, result){
                         //handles after the query for one
-                        //console.log('found item');
-                        //console.log(JSON.stringify(item));
                         //respond(response, item);
                     });
                 }
@@ -106,7 +99,6 @@ exports.createAddress = function(response, newEntry){
         if(!err) {
             db.collection('addresses', function(err, coll) {
                 if(!err) {
-                    console.log('collection addresses opened');
                     coll.insert(newEntry, {safe:true}, function(err, result){
                     });
                     respond(response, {}, {});
@@ -130,7 +122,6 @@ exports.deleteAddress = function(response, data){
         if(!err) {
             db.collection('addresses', function(err, coll) {
                 if(!err) {
-                    console.log('collection addresses opened');
     		    coll.remove({_id: ObjectID(data._id)}, {safe:true}, function(err, result){
             		// handles after the remove
                     });
