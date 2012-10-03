@@ -2,16 +2,20 @@
 // @jfreeman
 
 var index = require('./index.js');
-exports.route = function(mapping, path, response, postData){
+exports.route = function(mapping, path, response, postData, method){
+    console.log(postData);
     console.log('routing to: '+path);
+    var shortpath = '/'+path.split('/')[1] + '_'+method;
+    console.log('routing to shortpath: '+shortpath);
+    console.log(mapping[shortpath]);
     if( path === '/') {
         response.writeHead(404, {"Content-Type":"text/html"});
         response.write(index.HTML);
         response.end();
     }
-    else if (typeof mapping[path] === 'function') {
+    else if (typeof mapping[shortpath] === 'function') {
         console.log('in router');
-        mapping[path](response, postData);
+        mapping[shortpath](response, postData);
     }
     else {
         //error out

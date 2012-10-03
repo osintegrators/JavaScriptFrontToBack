@@ -27,7 +27,7 @@ exports.init = function() {
                 if(!err) {
                 //do something
                 console.log('>> Collection Created, DB ready for use');
-                collection.insert({name:'Jonathan', phone:'703-505-5246', address:'123 main st', email:'me@me.com'}, {safe:true}, function( err, result) {
+                collection.insert({name:'Freeman, Jonathan', phone:'+1.919.321.0119', address:'345 West Main St, Durham, NC 27701', email:'info@osintegrators.com'}, {safe:true}, function( err, result) {
                 if(err) {
                     console.log(err);
                 }

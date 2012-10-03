@@ -16,7 +16,7 @@ var respond = function(response, data, err) {
     response.end();
 };
 
-exports.getAddressList = function(response){
+exports.getAddresses = function(response){
     // TODO query the collection and return the list of addresses
     // Since we're dealing with a relatively small amount of data,
     // use toArray().  If more data is involved, stream it!
@@ -28,7 +28,6 @@ exports.getAddressList = function(response){
                     var cursor = coll.find();
                     
                     cursor.toArray(function(err, items) {
-                        console.log(JSON.stringify(items));
                         respond(response, items);
                     });
                 }
@@ -48,7 +47,6 @@ exports.getAddressList = function(response){
 exports.getAddress = function(response, data){
     // TODO query the collection with an ID and return a single address entry
     console.log('in get address');
-    console.log(data.data);
     db.open( function(err, db) {
         if(!err) {
             db.collection('addresses', function(err, coll) {
@@ -57,7 +55,6 @@ exports.getAddress = function(response, data){
                     coll.findOne({_id: ObjectID(data.data)}, function(err, item){
                         //handles after the query for one
                         console.log('found item');
-                        console.log(JSON.stringify(item));
                         respond(response, item);
                     });
                 }
@@ -74,18 +71,18 @@ exports.getAddress = function(response, data){
     });
 };
 
-exports.updateAddress = function(response, obj){
-    var id = ObjectID(obj.data._id);
+exports.updateAddress = function(response, data){
     db.open( function(err, db) {
         if(!err) {
             db.collection('addresses', function(err, coll) {
                 if(!err) {
                     console.log('collection addresses opened');
-                    coll.update({_id: ObjectID(data.data)}, function(err, item){
+                  //  coll.update({_id: ObjectID(data._id)}, function(err, item){
+                    coll.update({_id: ObjectID(data._id)}, {$set: recreateAddressWithoutId(data)}, {safe:true}, function(err, result){
                         //handles after the query for one
-                        console.log('found item');
-                        console.log(JSON.stringify(item));
-                        respond(response, item);
+                        //console.log('found item');
+                        //console.log(JSON.stringify(item));
+                        //respond(response, item);
                     });
                 }
                 else {
@@ -99,9 +96,8 @@ exports.updateAddress = function(response, obj){
         }
         db.close();
     });
-    collection.update({uniqueId:id}, {$set: obj}, {safe:true}, function(err, result){
             // handles after the update
-            });
+     //       });
 };
 
 exports.createAddress = function(response, newEntry){
@@ -128,9 +124,31 @@ exports.createAddress = function(response, newEntry){
     });
 };
 
-exports.deleteAddress = function(response, idToDelete){
+exports.deleteAddress = function(response, data){
     //TODO delete a specified address from the collection
-    collection.remove({uniqueId:idToDelete}, {safe:true}, function(err, result){
-            // handles after the remove
+    db.open( function(err, db) {
+        if(!err) {
+            db.collection('addresses', function(err, coll) {
+                if(!err) {
+                    console.log('collection addresses opened');
+    		    coll.remove({_id: ObjectID(data._id)}, {safe:true}, function(err, result){
+            		// handles after the remove
+                    });
+                    respond(response, {}, {});
+                }
+                else {
+                    console.log('error opening the collection in crud.js');
+                }
             });
+
+        }
+        else {
+            console.log('error opening the db in crud.js');
+        }
+        db.close();
+    });
 };
+
+recreateAddressWithoutId = function(address) {
+  return {name: address.name, address: address.address, phone: address.phone, email: address.email};
+}

@@ -7,7 +7,8 @@ var router = require('./router.js');
 
 exports.init = function(mapping){
     var onRequest = function(request, response) {
-        var path = url.parse(request.url).pathname;
+        var urlobj = url.parse(request.url);
+        var path = urlobj.pathname;
         var content;
         var postData = '';
 
@@ -22,8 +23,11 @@ exports.init = function(mapping){
         request.addListener("end", function() {
             if(postData){
                 postData = JSON.parse(postData);
+            } else if (request.method == 'GET' && urlobj.query && urlobj.query.length > 1) {
+                postData = JSON.parse(decodeURIComponent(urlobj.query)); 
+                console.log('postData after parse qs :'+postData);
             }
-            content = router.route(mapping, path, response, postData);
+            content = router.route(mapping, path, response, postData, request.method);
         });
 
     }
