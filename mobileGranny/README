@@ -1,0 +1,9 @@
+This is a project to implement Granny on mobile devices.
+
+It is only now set up to work on android devices.
+
+The first page is a choice of which persistence method you want:
+-Ti.App.Properties
+-Ti.Filesystem
+
+are the only ones that work right now.  The SQLite3 db option hasn't been set up yet.
