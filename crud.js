@@ -43,13 +43,14 @@ exports.getAddresses = function(response){
     });
 };
 
-exports.getAddress = function(response, data){
+exports.getAddress = function(response, data, pathparts){
+    var theid = pathparts.length > 2 ? pathparts[2] : data.data;
     // TODO query the collection with an ID and return a single address entry
     db.open( function(err, db) {
         if(!err) {
             db.collection('addresses', function(err, coll) {
                 if(!err) {
-                    coll.findOne({_id: ObjectID(data.data)}, function(err, item){
+                    coll.findOne({_id: ObjectID(theid)}, function(err, item){
                         //handles after the query for one
                         respond(response, item);
                     });

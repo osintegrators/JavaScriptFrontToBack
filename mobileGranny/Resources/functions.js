@@ -88,35 +88,42 @@ var getAddresses = function (tableList){
         onload: function(){
             var data = [];
             try {
+            	Ti.API.log("got data responseText is "+this.responseText);
                 var responseObj = JSON.parse(this.responseText).data;
+                Ti.API.log("data is "+responseObj);
                 for( var i = 0, len = responseObj.length; i < len; i++) { 
-                    var row = {height: '48dp'};
-                    row.id = responseObj._id;
-                    row.title = responseObj.name;
+                    var row = {height: '48dp', color: 'black'};
+                    row.id = responseObj[i]._id;
+                    row.title = responseObj[i].name;
+                    Ti.API.log('title is '+responseObj[i].name);
                     data.push(row);
                 }
                 // data has been built, add it to the table list
                 tableList.setData(data);
             }
-            catch(e){}
+            catch(e){ Ti.API.log( ' error ' + e ) }
         }
     });
-    xhr.open("GET", "addresses");
+    xhr.open("GET", Constants.serverAddr + "addresses");
     xhr.send();
 };
 
 exports.getAddress = function (personId, callback){
     var xhr = Ti.Network.createHTTPClient({
         onload: function() {
+        	Ti.API.log("onload");
+        	var data = [];
             try {
                 var responseObj = JSON.parse(this.responseText).data;
+                Ti.API.log("data is "+responseObj);
+                 
                 callback(responseObj);
             }
-            catch(e){}
+            catch(e){ Ti.API.log('error ' +e);}
         }
     });
-    xhr.open("POST", "address");
-    xhr.send({"data":personId});
+    xhr.open("GET", Constants.serverAddr + "address"+"/"+personId);
+    xhr.send();
 };
 
 exports.setAddress = function (personId,updatedPerson){
@@ -126,7 +133,8 @@ exports.setAddress = function (personId,updatedPerson){
             Ti.App.fireEvent('changesSaved');
         }
     });
-    xhr.open("POST", "address");
+    xhr.open("POST", Constants.serverAddr + "address");
+    xhr.setRequestHeader("Content-Type","application/json");
     xhr.send(updatedPerson);
 };
 

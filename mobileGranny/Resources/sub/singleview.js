@@ -4,13 +4,13 @@ var editMode = false;
 
 // function to assign values to the labels
 var hydrate = function(data){
-    singleInfo = Functions.getAddress(singleView.singleId);
+  //  singleInfo = Functions.getAddress(singleView.singleId);
 
-    id = singleView.singleId;
-    name = name;
-    phone = singleInfo.phone;
-    address = singleInfo.physAdd;
-    email = singleInfo.email;
+    id = data._id;
+    name = data.name;
+    phone = data.phone;
+    address = data.address;
+    email = data.email;
     
     nameLabel.text = name;
     phoneLabel.text = phone;
@@ -79,7 +79,7 @@ var addressText = Ti.UI.createTextField({
 });
 
 var emailText = Ti.UI.createTextField({
-    hintText:'emailAddress',
+    hintText:'Email Address',
     keyboardType: Titanium.UI.KEYBOARD_URL,
     top: '160dp',
     left: '48dp',
