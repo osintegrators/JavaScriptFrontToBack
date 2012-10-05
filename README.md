@@ -1,9 +1,9 @@
 JavaScriptFrontToBack
 =====================
 
-This is a demo REPO that involves building a simple CRUD application with:
+This is a simple CRUD application with:
 
-MongoDB/Couchbase
+MongoDB
 Node.js
 Desktop UI with jQuery
 Mobile App with Titanium
