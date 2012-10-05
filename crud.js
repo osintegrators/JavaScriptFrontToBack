@@ -73,11 +73,9 @@ exports.updateAddress = function(response, data){
         if(!err) {
             db.collection('addresses', function(err, coll) {
                 if(!err) {
-                  //  coll.update({_id: ObjectID(data._id)}, function(err, item){
                     coll.update({_id: ObjectID(data._id)}, {$set: recreateAddressWithoutId(data)}, {safe:true}, function(err, result){
-                        //handles after the query for one
-                        //respond(response, item);
                     });
+                    respond(response);
                 }
                 else {
                     console.log('error opening the collection in crud.js');
@@ -90,8 +88,6 @@ exports.updateAddress = function(response, data){
         }
         db.close();
     });
-            // handles after the update
-     //       });
 };
 
 exports.createAddress = function(response, newEntry){
