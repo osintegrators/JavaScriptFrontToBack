@@ -127,15 +127,32 @@ exports.getAddress = function (personId, callback){
 };
 
 exports.setAddress = function (personId,updatedPerson){
+	Ti.API.log('person id : '+ personId);
+	Ti.API.log('updatedPerson: '+JSON.stringify(updatedPerson));
+	var method;
+	if(personId === 'new') {
+		method = 'PUT';
+	}
+	else {
+		method = 'POST';
+		updatedPerson["_id"] = personId;
+	}
+	
     var xhr = Ti.Network.createHTTPClient({
-        onload: function() {
+        onload: function(data) {
             alert('Saved');
-            Ti.App.fireEvent('changesSaved');
+            Ti.App.fireEvent('changesSaved', updatedPerson);
+        },
+        onerror: function(){
+        	Ti.API.log('error saving');
+        	alert('Error Saving');
         }
+        
     });
-    xhr.open("POST", Constants.serverAddr + "address");
+    xhr.open(method, Constants.serverAddr + "address");
     xhr.setRequestHeader("Content-Type","application/json");
-    xhr.send(updatedPerson);
+    xhr.setRequestHeader("charset","utf-8");
+    xhr.send(JSON.stringify(updatedPerson));
 };
 
 /*
@@ -146,8 +163,8 @@ exports.setAddress = function (personId,updatedPerson){
 exports.makeUpdatedPerson = function(view){
     var updatedPerson = {};
     updatedPerson.name = view.children[4].value;
-    updatedPerson.address = view.children[6].value;
-    updatedPerson.phone = view.children[5].value;
+    updatedPerson.address = view.children[5].value;
+    updatedPerson.phone = view.children[6].value;
     updatedPerson.email = view.children[7].value;
     return updatedPerson;
 };
@@ -177,7 +194,7 @@ exports.makeEditable = function(view, id){
 exports.resetEdits = function(view,singleInfo){
     var name = singleInfo.name;
     var phone = singleInfo.phone;
-    var address = singleInfo.physAdd;
+    var address = singleInfo.address;
     var email = singleInfo.email;
     
     view.children[4].value = name;
@@ -190,9 +207,13 @@ exports.resetEdits = function(view,singleInfo){
     view.children[7].visible = false;
     
     view.children[0].visible = true;
+    view.children[0].text = name;
     view.children[1].visible = true;
+    view.children[1].text = address;
     view.children[2].visible = true;
+    view.children[2].text = phone;
     view.children[3].visible = true;
+    view.children[3].text = email;
 
     view.children[8].title = 'Edit Entry';
     view.children[9].visible = false;

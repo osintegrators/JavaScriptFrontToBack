@@ -1,10 +1,11 @@
 singleView = Ti.UI.currentWindow;
 Functions = require('functions');
 var editMode = false;
+var singleInfo;
 
 // function to assign values to the labels
 var hydrate = function(data){
-  //  singleInfo = Functions.getAddress(singleView.singleId);
+    singleInfo = data;
 
     id = data._id;
     name = data.name;
@@ -86,6 +87,7 @@ var emailText = Ti.UI.createTextField({
     visible:false
 });
 
+
 //create buttons
 var saveButton = Ti.UI.createButton({
     title: 'Save changes',
@@ -118,22 +120,16 @@ editCancel.addEventListener('click', function(){
     }
 });
 
-Ti.App.addEventListener('changesSaved', function(){
-    singleInfo = Functions.getAddress(singleView.singleId);
-
-    id = singleView.singleId;
-    name = name;
-    phone = singleInfo.phone;
-    address = singleInfo.physAdd;
-    email = singleInfo.email;
+Ti.App.addEventListener('changesSaved', function(data){
+   singleInfo = data;
     
-    nameLabel.text = name;
-    phoneLabel.text = phone;
-    addressLabel.text = address;
-    emailLabel.text = email;
-    
-    editCancel.fireEvent('click');
-    Ti.App.fireEvent('updateList');
+    if(typeof data._id === 'undefined') {
+    	singleView.close();
+    }
+    else {
+	    editCancel.fireEvent('click');
+	    Ti.App.fireEvent('updateList');
+    }
 });
 saveButton.addEventListener('click', function(){
     var updatedPerson = Functions.makeUpdatedPerson(view);
@@ -187,4 +183,3 @@ contactView.add(view);
 
 //add views to window
 singleView.add(contactView);
-

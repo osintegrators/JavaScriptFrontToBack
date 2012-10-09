@@ -4,3 +4,4 @@ build/
 
 #ignore logs
 *.log
+.fastdev.lock

@@ -91,7 +91,6 @@ exports.updateAddress = function(response, data){
 };
 
 exports.createAddress = function(response, newEntry){
-    // TODO insert a new address into the collection
     db.open( function(err, db) {
         if(!err) {
             db.collection('addresses', function(err, coll) {
