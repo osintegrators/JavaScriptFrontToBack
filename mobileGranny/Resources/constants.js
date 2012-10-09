@@ -7,4 +7,4 @@ exports.defaultArray = [{firstName:'Joe',lastName:'Blow',physAdd:'123 Main St.',
 
 //exports.serverAddr = 'http://grannynode.cloudfoundry.com/'
 
-exports.serverAddr = 'http://10.5.70.245:8080/'
+exports.serverAddr = 'http://192.168.1.111:8080/'

@@ -67,7 +67,7 @@ body {
 }
 </style>
 <head>
-    <title>Granny\'s Addressbook</title>
+    <title>Granny's Addressbook</title>
 
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"> </script>
 
@@ -76,7 +76,7 @@ body {
 <div id="outer">
 <div id="inner">
 <h2>
-    Granny\'s Addressbook
+    Granny's Addressbook
 </h2>
 
 <div id="content">
@@ -122,9 +122,9 @@ var app = {
              data = data.data;
             
             var entries = [];
-            entries.push("<option value=\'\' />");
+            entries.push("<option value='' />");
             $.each(data, function(){
-                entries.push("<option name=\'\"+ this.name + \"\' value=\'\"+ this._id+\"\'>\"+ this.name +\"</option>");
+                entries.push("<option name='"+ this.name + "' value='"+ this._id+"'>"+ this.name +"</option>");
             });
             
             $("#addressList").empty();
